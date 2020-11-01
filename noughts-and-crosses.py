@@ -4,11 +4,10 @@ import curses
 from menu import Menu
 from game import Game
 
-
 def main(stdscr):
 	stdscr.keypad(True)
 
-	menu = Menu(stdscr, [ "One Player", "Two Player", "Zero Players", "Quit" ])
+	menu = Menu(stdscr, [ "One Player", "Two Player", "Zero Players", "Quit" ], title = "Noughts and Crosses v0.1")
 
 	while True:
 		menu.display()

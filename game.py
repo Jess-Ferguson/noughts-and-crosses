@@ -1,18 +1,33 @@
 import curses
 
-
 class Game:
 	GAME_LIVE = 0
 	GAME_OVER = 1
 
 	_player = 0
-	_player_symbols = ['X', 'O']
+	_player_symbols = ['X',	'O']
 
 	def __init__(self, screen):
 		self._screen = screen
 
 	def initialise(self):
 		rows, cols = self._screen.getmaxyx()
+		board_visual = [
+						'┏━━━━━━━┳━━━━━━━┳━━━━━━━┓',
+						'┃       ┃       ┃       ┃',
+						'┃       ┃       ┃       ┃',
+						'┃       ┃       ┃       ┃',
+						'┣━━━━━━━╋━━━━━━━╋━━━━━━━┫',
+						'┃       ┃       ┃       ┃',
+						'┃       ┃       ┃       ┃',
+						'┃       ┃       ┃       ┃',
+						'┣━━━━━━━╋━━━━━━━╋━━━━━━━┫',
+						'┃       ┃       ┃       ┃',
+						'┃       ┃       ┃       ┃',
+						'┃       ┃       ┃       ┃',
+						'┗━━━━━━━┻━━━━━━━┻━━━━━━━┛'
+					]
+
 		self._board = [
 				[0, 0, 0],
 				[0, 0, 0],
@@ -22,27 +37,24 @@ class Game:
 		self._board_y = 1
 		self._quit = False
 
-		y = int((rows / 2) - 7)
-		x = int((cols / 2) - 12)
-
 		self._screen.clear()
 		self._screen.border()
 
-		self._screen.addstr(y, x + 0, '┏━━━━━━━┳━━━━━━━┳━━━━━━━┓')
-		self._screen.addstr(y + 1, x, '┃       ┃       ┃       ┃')
-		self._screen.addstr(y + 2, x, '┃       ┃       ┃       ┃')
-		self._screen.addstr(y + 3, x, '┃       ┃       ┃       ┃')
-		self._screen.addstr(y + 4, x, '┣━━━━━━━╋━━━━━━━╋━━━━━━━┫')
-		self._screen.addstr(y + 5, x, '┃       ┃       ┃       ┃')
-		self._screen.addstr(y + 6, x, '┃       ┃       ┃       ┃')
-		self._screen.addstr(y + 7, x, '┃       ┃       ┃       ┃')
-		self._screen.addstr(y + 8, x, '┣━━━━━━━╋━━━━━━━╋━━━━━━━┫')
-		self._screen.addstr(y + 9, x, '┃       ┃       ┃       ┃')
-		self._screen.addstr(y + 10, x, '┃       ┃       ┃       ┃')
-		self._screen.addstr(y + 11, x, '┃       ┃       ┃       ┃')
-		self._screen.addstr(y + 12, x, '┗━━━━━━━┻━━━━━━━┻━━━━━━━┛')
+		y = int(rows / 2 - len(board_visual) / 2)
+		x = int(cols / 2 - len(board_visual[0]) / 2)
 
-		self._screen.move(int(rows / 2) - 1, int(cols / 2))
+		for row in board_visual:
+			self._screen.addstr(y, x, row)
+			y  += 1
+
+		y = int(rows / 2)
+		x = int(cols / 2)
+
+		if y % 2 == 0:
+			y -= 1
+
+		self._screen.move(y, x)
+		self._screen.refresh()
 
 	def takeTurn(self):
 		while True:
@@ -85,6 +97,7 @@ class Game:
 				break
 			elif key == ord('q'):
 				self._quit = True
+
 				break
 
 			self._screen.refresh()
@@ -122,13 +135,17 @@ class Game:
 			self._quit = False
 			return
 
+		rows, cols = self._screen.getmaxyx()
+		y = int(rows / 2)
+		message = "It's a draw!"
+		
+		if self._victor:
+			message = "Player " + str(self._victor) + " is victorious!"
+
+		x = int(cols / 2) - int(len(message) / 2)
+
 		self._screen.clear()
 		self._screen.border()
-
-		if self._victor != 0:
-			self._screen.addstr(4, 50, "Congratulations player " + str(self._victor) + "!") # TODO: Improve game over message
-		else:
-			self._screen.addstr(4, 55, "It's a draw!")
-
+		self._screen.addstr(y, x, message)
 		self._screen.refresh()
 		self._screen.getch()
