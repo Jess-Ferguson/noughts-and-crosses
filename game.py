@@ -40,19 +40,16 @@ class Game:
 		self._screen.clear()
 		self._screen.border()
 
-		y = int(rows / 2 - len(board_visual) / 2)
-		x = int(cols / 2 - len(board_visual[0]) / 2)
+		y = round((rows - len(board_visual)) / 2)
+		x = round((cols - len(board_visual[0])) / 2)
 
 		for row in board_visual:
 			self._screen.addstr(y, x, row)
-			y  += 1
+			y += 1
 
-		y = int(rows / 2)
-		x = int(cols / 2)
-
-		if y % 2 == 0:
-			y -= 1
-
+		y -= round(len(board_visual) / 2) + 1
+		x += round(len(board_visual[0]) / 2)
+		
 		self._screen.move(y, x)
 		self._screen.refresh()
 

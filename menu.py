@@ -13,16 +13,16 @@ class Menu:
 			self._screen.border()
 
 		start_y, start_x = self._screen.getmaxyx()
-		y = int(start_y / 2 - len(self._items))
+		y = round(start_y / 2) - len(self._items)
 
 		if self._title != None:
-			x = int(start_x / 2 - len(self._title) / 2)
+			x = round((start_x - len(self._title)) / 2)
 
 			self._screen.addstr(y - 3, x, self._title) # This will break if too many items are given
 
 		for item in self._items:
 			attribute = 0
-			x = int(start_x / 2 - len(item) / 2)
+			x = int((start_x - len(item)) / 2)
 
 			if item == self._items[self._selected]:
 				attribute |= curses.A_REVERSE
